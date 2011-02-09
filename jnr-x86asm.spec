@@ -5,7 +5,7 @@
 
 Name:           jnr-x86asm
 Version:        0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}-%{version}
 
 %changelog
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Mon May 24 2010 Mohammed Morsi <mmorsi@redhat.com> - 0.1-2
 - fixed macros for consistency
 - fixed Source0 url
