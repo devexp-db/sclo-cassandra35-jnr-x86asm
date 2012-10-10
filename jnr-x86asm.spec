@@ -5,14 +5,13 @@
 
 Name:           jnr-x86asm
 Version:        0.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
 License:        LGPLv3
 URL:            http://github.com/%{cluster}/%{name}
 Source0:        %{url}/tarball/%{version}/%{cluster}-%{name}-%{version}-%{commit_rev}-%{commit_dl}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 BuildRequires:  ant
@@ -36,35 +35,42 @@ Javadoc for %{name}.
 
 %prep
 %setup -q -n %{cluster}-%{name}-%{git_commit}
-find ./ -name '*.jar' -exec rm -f '{}' \; 
-find ./ -name '*.class' -exec rm -f '{}' \; 
+find ./ -name '*.jar' -delete
+find ./ -name '*.class' -delete
+
+%pom_xpath_remove pom:extensions
 
 %build
 ant
 
 %install
-rm -rf %{buildroot}
+
 mkdir -p %{buildroot}%{_javadir}
-cp -p dist/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-ln -s %{_javadir}/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+cp -p dist/%{name}.jar %{buildroot}%{_javadir}/%{name}.jar
+
+mkdir -p %{buildroot}%{_mavenpomdir}
+install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+%add_maven_depmap JPP-%{name}.pom %{name}.jar
 
 # javadoc
-install -p -d -m 755 %{buildroot}%{_javadocdir}/%{name}-%{version}
-cp -r dist/javadoc/* %{buildroot}%{_javadocdir}/%{name}-%{version}
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+install -p -d -m 755 %{buildroot}%{_javadocdir}/%{name}
+cp -r dist/javadoc/* %{buildroot}%{_javadocdir}/%{name}
 
 %files
-%defattr(-,root,root,-)
 %doc LICENSE COPYING*
 %{_javadir}/*
+%{_mavenpomdir}/JPP-%{name}.pom
+%{_mavendepmapfragdir}/%{name}
 
 %files javadoc
-%defattr(-,root,root,-)
-%{_javadocdir}/%{name}-%{version}
+%doc LICENSE COPYING*
+%{_javadocdir}/%{name}
 
 %changelog
+* Tue Oct 09 2012 gil cattaneo <puntogil@libero.it> - 0.1-6
+- add maven pom
+- adapt to current guideline
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
