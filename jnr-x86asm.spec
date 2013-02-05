@@ -1,24 +1,28 @@
-%global cluster wmeissner
-%global git_commit 78eebb2
-%global commit_dl g78eebb2
-%global commit_rev 0
+%global commit_hash 1dead92
+%global tag_hash 2a7fb9b
 
 Name:           jnr-x86asm
-Version:        0.1
-Release:        6%{?dist}
+Version:        1.0.2
+Release:        1%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
-License:        LGPLv3
-URL:            http://github.com/%{cluster}/%{name}
-Source0:        %{url}/tarball/%{version}/%{cluster}-%{name}-%{version}-%{commit_rev}-%{commit_dl}.tar.gz
+License:        MIT
+URL:            http://github.com/jnr/%{name}/
+Source0:        https://github.com/jnr/%{name}/tarball/%{version}/jnr-%{name}-%{version}-0-g%{commit_hash}.tar.gz
 BuildArch:      noarch
 
-BuildRequires:  ant
-BuildRequires:  ant-nodeps
-BuildRequires:  java-devel >= 1:1.6.0
+BuildRequires:  java-devel
 BuildRequires:  jpackage-utils
-Requires:       java >= 1:1.6.0
+BuildRequires:  maven-local
+BuildRequires:  maven-compiler-plugin
+BuildRequires:  maven-install-plugin
+BuildRequires:  maven-jar-plugin
+BuildRequires:  maven-javadoc-plugin
+BuildRequires:  maven-surefire-plugin
+BuildRequires:  maven-surefire-provider-junit4
+
+Requires:       java
 Requires:       jpackage-utils
 
 %description
@@ -27,46 +31,47 @@ Pure-java port of asmjit (http://code.google.com/p/asmjit/)
 %package        javadoc
 Summary:        Javadoc for %{name}
 Group:          Documentation
-Requires:       %{name} = %{version}-%{release}
 Requires:       jpackage-utils
 
 %description    javadoc
 Javadoc for %{name}.
 
 %prep
-%setup -q -n %{cluster}-%{name}-%{git_commit}
+%setup -q -n jnr-%{name}-%{tag_hash}
 find ./ -name '*.jar' -delete
 find ./ -name '*.class' -delete
 
-%pom_xpath_remove pom:extensions
-
 %build
-ant
+mvn-rpmbuild install javadoc:aggregate
 
 %install
+mkdir -p $RPM_BUILD_ROOT%{_javadir}
+cp -p target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 
-mkdir -p %{buildroot}%{_javadir}
-cp -p dist/%{name}.jar %{buildroot}%{_javadir}/%{name}.jar
+mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -rp target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
-mkdir -p %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
+install -pm 644 pom.xml  \
+        $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
+
 %add_maven_depmap JPP-%{name}.pom %{name}.jar
 
-# javadoc
-install -p -d -m 755 %{buildroot}%{_javadocdir}/%{name}
-cp -r dist/javadoc/* %{buildroot}%{_javadocdir}/%{name}
-
 %files
-%doc LICENSE COPYING*
-%{_javadir}/*
+%doc LICENSE README
 %{_mavenpomdir}/JPP-%{name}.pom
 %{_mavendepmapfragdir}/%{name}
+%{_javadir}/%{name}.jar
 
 %files javadoc
-%doc LICENSE COPYING*
+%doc LICENSE
 %{_javadocdir}/%{name}
 
 %changelog
+* Tue Feb 05 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 1.0.2-1
+- Updated to version 1.0.2.
+- Switch from ant to maven.
+
 * Tue Oct 09 2012 gil cattaneo <puntogil@libero.it> - 0.1-6
 - add maven pom
 - adapt to current guideline
