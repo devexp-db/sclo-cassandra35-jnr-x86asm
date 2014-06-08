@@ -3,7 +3,7 @@
 
 Name:           jnr-x86asm
 Version:        1.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
@@ -67,6 +67,9 @@ install -pm 644 pom.xml  \
 %{_javadocdir}/%{name}
 
 %changelog
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Fri Mar 28 2014 Michael Simacek <msimacek@redhat.com> - 1.0.2-3
 - Use Requires: java-headless rebuild (#1067528)
 
