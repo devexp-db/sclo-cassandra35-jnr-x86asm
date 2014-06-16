@@ -3,7 +3,7 @@
 
 Name:           jnr-x86asm
 Version:        1.0.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
@@ -15,12 +15,6 @@ BuildArch:      noarch
 BuildRequires:  java-devel
 BuildRequires:  jpackage-utils
 BuildRequires:  maven-local
-BuildRequires:  maven-compiler-plugin
-BuildRequires:  maven-install-plugin
-BuildRequires:  maven-jar-plugin
-BuildRequires:  maven-javadoc-plugin
-BuildRequires:  maven-surefire-plugin
-BuildRequires:  maven-surefire-provider-junit4
 
 Requires:       jpackage-utils
 
@@ -41,7 +35,7 @@ find ./ -name '*.jar' -delete
 find ./ -name '*.class' -delete
 
 %build
-mvn-rpmbuild install javadoc:aggregate
+%mvn_build
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
@@ -56,17 +50,17 @@ install -pm 644 pom.xml  \
 
 %add_maven_depmap JPP-%{name}.pom %{name}.jar
 
-%files
+%files -f .mfiles
 %doc LICENSE README
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
-%{_javadir}/%{name}.jar
 
 %files javadoc
 %doc LICENSE
 %{_javadocdir}/%{name}
 
 %changelog
+* Mon Jun 16 2014 Mat Booth <mat.booth@redhat.com> - 1.0.2-5
+- Fix FTBFS.
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
