@@ -3,7 +3,7 @@
 
 Name:           jnr-x86asm
 Version:        1.0.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
@@ -13,10 +13,7 @@ Source0:        https://github.com/jnr/%{name}/tarball/%{version}/jnr-%{name}-%{
 BuildArch:      noarch
 
 BuildRequires:  java-devel
-BuildRequires:  jpackage-utils
 BuildRequires:  maven-local
-
-Requires:       jpackage-utils
 
 %description
 Pure-java port of asmjit (http://code.google.com/p/asmjit/)
@@ -24,7 +21,6 @@ Pure-java port of asmjit (http://code.google.com/p/asmjit/)
 %package        javadoc
 Summary:        Javadoc for %{name}
 Group:          Documentation
-Requires:       jpackage-utils
 
 %description    javadoc
 Javadoc for %{name}.
@@ -38,26 +34,18 @@ find ./ -name '*.class' -delete
 %mvn_build
 
 %install
-mkdir -p $RPM_BUILD_ROOT%{_javadir}
-cp -p target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
-
-mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -rp target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-
-install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -pm 644 pom.xml  \
-        $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
-
-%add_maven_depmap JPP-%{name}.pom %{name}.jar
+%mvn_install
 
 %files -f .mfiles
 %doc LICENSE README
 
-%files javadoc
+%files javadoc -f .mfiles-javadoc
 %doc LICENSE
-%{_javadocdir}/%{name}
 
 %changelog
+* Thu Apr 30 2015 Alexander Kurtakov <akurtako@redhat.com> 1.0.2-6
+- Migrate to install with xmvn.
+
 * Mon Jun 16 2014 Mat Booth <mat.booth@redhat.com> - 1.0.2-5
 - Fix FTBFS.
 
