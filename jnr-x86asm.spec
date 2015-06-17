@@ -3,7 +3,7 @@
 
 Name:           jnr-x86asm
 Version:        1.0.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
@@ -43,6 +43,9 @@ find ./ -name '*.class' -delete
 %doc LICENSE
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.2-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Thu Apr 30 2015 Alexander Kurtakov <akurtako@redhat.com> 1.0.2-6
 - Migrate to install with xmvn.
 
