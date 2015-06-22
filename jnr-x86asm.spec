@@ -3,13 +3,15 @@
 
 Name:           jnr-x86asm
 Version:        1.0.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
 License:        MIT
 URL:            http://github.com/jnr/%{name}/
 Source0:        https://github.com/jnr/%{name}/tarball/%{version}/jnr-%{name}-%{version}-0-g%{commit_hash}.tar.gz
+Source1:        MANIFEST.MF
+Patch0:         add-manifest.patch
 BuildArch:      noarch
 
 BuildRequires:  java-devel
@@ -27,6 +29,8 @@ Javadoc for %{name}.
 
 %prep
 %setup -q -n jnr-%{name}-%{tag_hash}
+%patch0
+cp %{SOURCE1} .
 find ./ -name '*.jar' -delete
 find ./ -name '*.class' -delete
 
@@ -43,6 +47,9 @@ find ./ -name '*.class' -delete
 %doc LICENSE
 
 %changelog
+* Mon Jun 22 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.2-8
+- Add OSGi MANIFEST.MF.
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.2-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
