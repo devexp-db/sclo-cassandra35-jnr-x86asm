@@ -3,7 +3,7 @@
 
 Name:           jnr-x86asm
 Version:        1.0.2
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Pure-java port of asmjit
 
 Group:          Development/Libraries
@@ -48,6 +48,9 @@ find ./ -name '*.class' -delete
 %doc LICENSE
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.2-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Fri Dec 16 2016 Merlin Mathesius <mmathesi@redhat.com> - 1.0.2-10
 - Add missing BuildRequires to fix FTBFS (BZ#1405627).
 
