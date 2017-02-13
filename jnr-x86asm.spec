@@ -1,45 +1,52 @@
+%{?scl:%scl_package jnr-x86asm}
+%{!?scl:%global pkg_name %{name}}
+
 %global commit_hash 1dead92
 %global tag_hash 2a7fb9b
 
-Name:           jnr-x86asm
-Version:        1.0.2
-Release:        11%{?dist}
-Summary:        Pure-java port of asmjit
+Name:		%{?scl_prefix}jnr-x86asm
+Version:	1.0.2
+Release:	12%{?dist}
+Summary:	Pure-java port of asmjit
 
-Group:          Development/Libraries
-License:        MIT
-URL:            http://github.com/jnr/%{name}/
-Source0:        https://github.com/jnr/%{name}/tarball/%{version}/jnr-%{name}-%{version}-0-g%{commit_hash}.tar.gz
-Source1:        MANIFEST.MF
-Patch0:         add-manifest.patch
-BuildArch:      noarch
+Group:		Development/Libraries
+License:	MIT
+URL:		http://github.com/jnr/%{pkg_name}/
+Source0:	https://github.com/jnr/%{pkg_name}/tarball/%{version}/jnr-%{pkg_name}-%{version}-0-g%{commit_hash}.tar.gz
+Source1:	MANIFEST.MF
+Patch0:		add-manifest.patch
+BuildArch:	noarch
 
-BuildRequires:  java-devel
-BuildRequires:  maven-local
-BuildRequires:  sonatype-oss-parent
+BuildRequires:	%{?scl_prefix_maven}maven-local
+BuildRequires:	%{?scl_prefix_maven}sonatype-oss-parent
+%{?scl:Requires: %scl_runtime}
 
 %description
 Pure-java port of asmjit (http://code.google.com/p/asmjit/)
 
-%package        javadoc
-Summary:        Javadoc for %{name}
-Group:          Documentation
+%package javadoc
+Summary:	Javadoc for %{name}
+Group:		Documentation
 
-%description    javadoc
+%description javadoc
 Javadoc for %{name}.
 
 %prep
-%setup -q -n jnr-%{name}-%{tag_hash}
+%setup -q -n jnr-%{pkg_name}-%{tag_hash}
 %patch0
 cp %{SOURCE1} .
 find ./ -name '*.jar' -delete
 find ./ -name '*.class' -delete
 
 %build
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_build
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_install
+%{?scl:EOF}
 
 %files -f .mfiles
 %doc LICENSE README
@@ -48,6 +55,9 @@ find ./ -name '*.class' -delete
 %doc LICENSE
 
 %changelog
+* Mon Feb 13 2017 Tomas Repik <trepik@redhat.com> - 1.0.2-12
+- scl conversion
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.2-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
